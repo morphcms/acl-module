@@ -1,21 +1,21 @@
 <?php
 
-namespace Modules\AclModule\Providers;
+namespace Modules\Acl\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
 
-class AclModuleServiceProvider extends ServiceProvider
+class AclServiceProvider extends ServiceProvider
 {
     /**
      * @var string $moduleName
      */
-    protected $moduleName = 'acl-module';
+    protected $moduleName = 'Acl';
 
     /**
      * @var string $moduleNameLower
      */
-    protected $moduleNameLower = 'aclmodule';
+    protected $moduleNameLower = 'acl';
 
     /**
      * Boot the application events.

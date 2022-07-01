@@ -1,5 +1,6 @@
 <?php
 
 return [
-    'name' => 'acl-module'
+    'name' => 'Acl',
+    'table_prefix' => 'acl_'
 ];
