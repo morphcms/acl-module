@@ -7,11 +7,6 @@
     "providers": [
         "Modules\\Acl\\Providers\\AclServiceProvider"
     ],
-    "migration": {
-        "seeds": [
-            "Modules\\Acl\\Database\\Seeders\\AclDatabaseSeeder"
-        ]
-    },
     "aliases": {},
     "files": [],
     "requires": [],
