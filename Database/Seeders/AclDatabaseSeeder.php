@@ -1,16 +1,35 @@
 <?php
 
-namespace Modules\AclModule\Database\Seeders;
+namespace Modules\Acl\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class AclDatabaseSeeder extends Seeder
 {
+    protected array $resources = [
+        'users',
+        'roles',
+        'permissions',
+    ];
+
     protected array $roles = [
         'super-admin',
         'admin',
+    ];
+
+    protected array $permissions = [
+        '*',
+        'view',
+        'viewAny',
+        'create',
+        'update',
+        'delete',
+        'replicate',
+        'attach',
+        'detach',
     ];
 
     /**
@@ -22,7 +41,7 @@ class AclDatabaseSeeder extends Seeder
     {
         Model::unguard();
 
-       foreach ($this->roles as $role) {
+        foreach ($this->roles as $role) {
             Role::create(['name' => $role]);
         }
     }
