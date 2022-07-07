@@ -10,14 +10,8 @@ use Spatie\Permission\Models\Role;
 class AclDatabaseSeeder extends Seeder
 {
     protected array $resources = [
-        'users',
         'roles',
         'permissions',
-    ];
-
-    protected array $roles = [
-        'super-admin',
-        'admin',
     ];
 
     protected array $permissions = [
@@ -28,8 +22,8 @@ class AclDatabaseSeeder extends Seeder
         'update',
         'delete',
         'replicate',
-        'attach',
-        'detach',
+        'assign',
+        'revoke',
     ];
 
     /**
@@ -41,8 +35,14 @@ class AclDatabaseSeeder extends Seeder
     {
         Model::unguard();
 
-        foreach ($this->roles as $role) {
-            Role::create(['name' => $role]);
+        Role::create(['name' => 'super-admin']);
+
+        foreach ($this->resources as $resource) {
+            foreach ($this->permissions as $permission) {
+               Permission::create(['name' => $resource . '.' . $permission]);
+            }
         }
+
+        Role::create(['name' => 'admin'])->givePermissionTo(['roles.*', 'permissions.*']);
     }
 }

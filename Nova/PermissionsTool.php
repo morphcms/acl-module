@@ -25,8 +25,8 @@ class PermissionsTool extends Tool
     public function menu(Request $request)
     {
         return MenuSection::make('ACL', [
-            MenuItem::resource(Permission::class)->canSee(fn() => true),
-            MenuItem::resource(Role::class)->canSee(fn() => true),
+            MenuItem::resource(Permission::class)->canSee(fn() => $request->user()->can('permissions.viewAny')),
+            MenuItem::resource(Role::class)->canSee(fn() => $request->user()->can('roles.viewAny')),
         ])->icon('users')->collapsable();
     }
 }
