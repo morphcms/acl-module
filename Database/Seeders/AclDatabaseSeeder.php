@@ -2,29 +2,20 @@
 
 namespace Modules\Acl\Database\Seeders;
 
-use Illuminate\Database\Seeder;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Permission\Models\Permission;
+use Illuminate\Database\Seeder;
+use Modules\Acl\Enums\BasePermission;
+use Modules\Acl\Enums\GenericPermission;
+use Modules\Acl\Enums\RolePermission;
+use Modules\Acl\Enums\UserPermission;
+use Modules\Acl\Services\AclService;
+use Modules\Acl\Utils\AclSeederHelper;
 use Spatie\Permission\Models\Role;
 
 class AclDatabaseSeeder extends Seeder
 {
-    protected array $resources = [
-        'roles',
-        'permissions',
-    ];
-
-    protected array $permissions = [
-        '*',
-        'view',
-        'viewAny',
-        'create',
-        'update',
-        'delete',
-        'replicate',
-        'assign',
-        'revoke',
-    ];
+    use AclSeederHelper;
 
     /**
      * Run the database seeds.
@@ -35,14 +26,37 @@ class AclDatabaseSeeder extends Seeder
     {
         Model::unguard();
 
-        Role::create(['name' => 'super-admin']);
+        $user = User::firstOrNew();
+        $roles = AclService::defaultRoles();
 
-        foreach ($this->resources as $resource) {
-            foreach ($this->permissions as $permission) {
-               Permission::create(['name' => $resource . '.' . $permission]);
+        foreach ($roles as $key => $currentRole) {
+            $role = Role::firstOrCreate(['name' => $currentRole]);
+            if ($currentRole === AclService::superAdminRole()) {
+                $user->assignRole($role);
             }
         }
 
-        Role::create(['name' => 'admin'])->givePermissionTo(['roles.*', 'permissions.*']);
+        $this->acl('generic')
+            ->onlyWebGuard()
+            ->attachEnum(GenericPermission::class, [
+                GenericPermission::ViewAdmin->value,
+                GenericPermission::ProtectImpersonation->value,
+                GenericPermission::CanImpersonate->value,
+            ])
+            ->create();
+
+        $this->acl('acl')
+            ->withSanctumGuard()
+            ->attachEnum(BasePermission::class, BasePermission::All->value)
+            ->attachEnum(RolePermission::class, RolePermission::All->value)
+            ->attachEnum(UserPermission::class, UserPermission::All->value)
+            ->create();
+
+        $role = Role::firstOrCreate(['name' => AclService::userRole()]);
+        $role->givePermissionTo(GenericPermission::ViewAdmin->value);
+
+        if (app()->environment('local')) {
+            $this->call(SampleDataSeeder::class);
+        }
     }
 }

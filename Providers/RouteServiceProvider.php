@@ -2,8 +2,8 @@
 
 namespace Modules\Acl\Providers;
 
-use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -61,7 +61,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapApiRoutes()
     {
-        Route::prefix('api')
+        Route::prefix('api/acl')
             ->middleware('api')
             ->namespace($this->moduleNamespace)
             ->group(module_path('Acl', '/Routes/api.php'));

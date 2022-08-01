@@ -12,10 +12,10 @@ use Modules\Acl\Nova\Resources\Role;
 
 class PermissionsTool extends Tool
 {
-   protected static array $resources = [
-       Permission::class,
-       Role::class,
-   ];
+    protected static array $resources = [
+        Permission::class,
+        Role::class,
+    ];
 
     public function boot()
     {
@@ -24,9 +24,9 @@ class PermissionsTool extends Tool
 
     public function menu(Request $request)
     {
-        return MenuSection::make('ACL', [
-            MenuItem::resource(Permission::class)->canSee(fn() => $request->user()->can('permissions.viewAny')),
-            MenuItem::resource(Role::class)->canSee(fn() => $request->user()->can('roles.viewAny')),
+        return MenuSection::make(__('ACL'), [
+            MenuItem::resource(Role::class)->canSee(fn () => $request->user()->can('roles.viewAny')),
+            MenuItem::resource(Permission::class)->canSee(fn () => $request->user()->can('permissions.viewAny')),
         ])->icon('users')->collapsable();
     }
 }
